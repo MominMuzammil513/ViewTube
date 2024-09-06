@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import { User } from "../modules/user.models.js";
+import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiREsponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
@@ -118,8 +118,8 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Avatar file is required")
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    const avatar = await uploadOnCloudinary(avatarLocalPath,"image")
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath,"image")
 
     if (!avatar) {
         throw new ApiError(400, "Avatar file is required")
@@ -345,7 +345,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
 
     //TODO: delete old image - assignment
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    const avatar = await uploadOnCloudinary(avatarLocalPath,"image")
 
     if (!avatar.url) {
         throw new ApiError(400, "Error while uploading on avatar")
@@ -379,7 +379,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     //TODO: delete old image - assignment
 
 
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath,"image")
 
     if (!coverImage.url) {
         throw new ApiError(400, "Error while uploading on avatar")

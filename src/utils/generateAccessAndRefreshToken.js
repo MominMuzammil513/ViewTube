@@ -1,4 +1,4 @@
-import { User } from "../modules/user.models.js";
+import { User } from "../models/user.models.js";
 import { ApiError } from "./ApiError.js";
 
 export const generateAccessAndRefreshToken = async (userId) => {

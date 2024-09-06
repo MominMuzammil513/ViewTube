@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .video {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px;
+      padding: 10px;
+      width: 300px;
+      cursor: pointer; /* Add cursor pointer */
+    }
+    .video img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    #video-player {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Video List</h1>
+  <div id="video-container" class="video-container"></div>
+  <div id="video-player-container">
+    <video id="video-player" controls>
+      <source id="video-source" src="" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script>
+    async function fetchVideos() {
+      try {
+        const response = await fetch('/api/v1/videos');
+        const data = await response.json();
+        const videoContainer = document.getElementById('video-container');
+
+        if (data.success) {
+          const videos = data.data.videos;
+          videos.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'video';
+            videoElement.innerHTML = `
+              <h2>${video.title}</h2>
+              <p>${video.description}</p>
+              <img src="${video.thumbnail}" alt="${video.title}">
+            `;
+            videoElement.addEventListener('click', () => playVideo(video.videoFile));
+            videoContainer.appendChild(videoElement);
+          });
+        } else {
+          console.error('Error fetching videos:', data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function playVideo(videoUrl) {
+      const videoPlayer = document.getElementById('video-player');
+      const videoSource = document.getElementById('video-source');
+      videoSource.src = videoUrl;
+      videoPlayer.load();
+      videoPlayer.play();
+    }
+
+    fetchVideos();
+  </script>
+</body>
+</html>
